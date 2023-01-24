@@ -1,5 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import {
+  fetchHouses,
+  setFilterCity,
+  setFilterType,
+} from '../../store/houses.slice'
 import { colors, Container, dimensions, FlexBox } from '../../styles'
 import { Button, Icon } from '../atoms'
 import { SelectGroup } from '../molecules'
@@ -27,6 +33,13 @@ const FormStyled = styled(FlexBox).attrs({ as: 'form' })`
 `
 
 function SubHeader({ ...props }) {
+  const dispatch = useDispatch()
+  const { cities, types } = useSelector((s) => s.houses)
+
+  useEffect(() => {
+    dispatch(fetchHouses())
+  }, [dispatch])
+
   return (
     <SubHeaderStyled {...props}>
       <Container>
@@ -36,11 +49,11 @@ function SubHeader({ ...props }) {
             label="Tipo"
             defaultText="Piso, chalet o garaje..."
             hideLabel
-            options={[
-              { value: 'piso', text: 'Piso' },
-              { value: 'garaje', text: 'Garaje' },
-              { value: 'chalets', text: 'Chalets' },
-            ]}
+            options={types.map((type) => ({
+              value: type,
+              text: `${type[0].toUpperCase()}${type.slice(1)}`,
+            }))}
+            onChange={(e) => dispatch(setFilterType(e.target.value))}
           />
 
           <SelectGroup
@@ -48,14 +61,19 @@ function SubHeader({ ...props }) {
             label="Ciudad"
             defaultText="Madrid, Barcelona o Zaragoza..."
             hideLabel
-            options={[
-              { value: 'barcelona', text: 'Barcelona' },
-              { value: 'madrid', text: 'Madrid' },
-              { value: 'zaragoza', text: 'Zaragoza' },
-            ]}
+            options={cities.map((city) => ({
+              value: city,
+              text: `${city[0].toUpperCase()}${city.slice(1)}`,
+            }))}
+            onChange={(e) => dispatch(setFilterCity(e.target.value))}
           />
 
-          <Button>
+          <Button
+            onClick={() => {
+              dispatch(setFilterCity(''))
+              dispatch(setFilterType(''))
+            }}
+          >
             <Icon icon="search" />
           </Button>
         </FormStyled>

@@ -1,6 +1,8 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { main } from '../../constants'
+import { colors } from '../../styles'
 
 const MainMenuStyled = styled.ul`
   display: flex;
@@ -16,13 +18,21 @@ const MainMenuStyled = styled.ul`
     }
   }
 `
-
 function MainMenu() {
   return (
     <MainMenuStyled>
       {Object.values(main).map(({ path, label }) => (
         <li key={path}>
-          <a href={path}>{label}</a>
+          <NavLink
+            to={path}
+            style={({ isActive }) => ({
+              color: isActive ? `${colors.purple}` : `${colors.font.base}`,
+              fontWeight: isActive ? 'bold' : 'normal',
+              textDecoration: 'none',
+            })}
+          >
+            {label}
+          </NavLink>
         </li>
       ))}
     </MainMenuStyled>
