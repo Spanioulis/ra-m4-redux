@@ -24,6 +24,9 @@ const initialState = {
     filterCity: '',
     filterType: '',
   },
+  isLoading: true,
+  isError: false,
+  isSuccess: false,
 }
 
 export const housesSlice = createSlice({
@@ -43,6 +46,8 @@ export const housesSlice = createSlice({
         console.log('fetchHouses.pending')
       })
       .addCase(fetchHouses.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
         action.payload.forEach((house) => {
           state.byId[house.id] = house
           if (!state.allIds.includes(house.id)) {
@@ -58,6 +63,8 @@ export const housesSlice = createSlice({
         console.log('fetchHouses.fullfiled')
       })
       .addCase(fetchHouses.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
         console.log('fetchHouses.rejected')
       })
   },

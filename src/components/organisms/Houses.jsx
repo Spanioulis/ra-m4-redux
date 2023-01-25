@@ -4,9 +4,7 @@ import styled from 'styled-components'
 import { fetchHouses } from '../../store/houses.slice'
 import { Button } from '../atoms'
 import { HouseCard } from '../molecules'
-import { useFetch } from '../../hooks'
 import { FlexBox, Grid } from '../../styles'
-import { urls } from '../../constants'
 
 const HousesStyled = styled(FlexBox)``
 
@@ -27,17 +25,23 @@ function Houses() {
   const totalHouses = 9 * currentPage
 
   const dispatch = useDispatch()
-  const { allIds, byId, filterCity, filterType } = useSelector((s) => s.houses)
+  const {
+    allIds,
+    byId,
+    filterCity,
+    filterType,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useSelector((s) => s.houses)
 
   useEffect(() => {
     dispatch(fetchHouses(currentPage))
   }, [dispatch, currentPage])
 
-  const { loading, isError, isSuccess } = useFetch(urls.houses)
-
   return (
     <HousesStyled>
-      {loading && <div>Loading...</div>}
+      {isLoading && <div>Loading...</div>}
       {isError && <div>Error</div>}
       {isSuccess && (
         <Grid gridGap="32px">
