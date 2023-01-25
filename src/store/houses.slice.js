@@ -5,6 +5,7 @@ import { urls } from '../constants'
 export const fetchHouses = createAsyncThunk(
   'houses/fetchHouses',
   async (name, { rejectWithValue }) => {
+    // Aquí no usas el name y deberías de pasarle el parametro para hacer el loadMore
     const response = await fetch(urls.houses)
     const data = await response.json()
     if (response.status < 200 || response.status >= 300) {
@@ -37,6 +38,7 @@ export const housesSlice = createSlice({
       state.filterType = action.payload
     },
     setShowHouses: (state, action) => {
+      // No es necesario
       state.showHouses = action.payload
     },
   },

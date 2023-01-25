@@ -42,7 +42,7 @@ function Houses() {
         <Grid gridGap="32px">
           {allIds
             .filter((id) => filterHouses(byId[id], filterCity, filterType))
-            .slice(0, showHouses)
+            .slice(0, showHouses) // El slice sobra
             .map((id) => (
               <HouseCard
                 key={id}
@@ -58,7 +58,7 @@ function Houses() {
         {allIds.length > showHouses && (
           <Button
             style={{ marginTop: '2rem' }}
-            onClick={() => dispatch(setShowHouses(showHouses + 9))}
+            onClick={() => dispatch(setShowHouses(showHouses + 9))} // El load more debería hacer otra petición al servidor
           >
             Load more
           </Button>
