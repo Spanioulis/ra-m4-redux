@@ -1,11 +1,12 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { urls } from '../constants'
 
 export const fetchHouses = createAsyncThunk(
   'houses/fetchHouses',
-  async (name, { rejectWithValue }) => {
-    const response = await fetch(urls.houses)
+  async (currentPage, { rejectWithValue }) => {
+    const response = await fetch(`${urls.houses}?_page=${currentPage}&_limit=9`)
     const data = await response.json()
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data)
@@ -19,7 +20,6 @@ const initialState = {
   allIds: [],
   cities: [],
   types: [],
-  showHouses: 9,
   houseFilter: {
     filterCity: '',
     filterType: '',
@@ -35,9 +35,6 @@ export const housesSlice = createSlice({
     },
     setFilterType: (state, action) => {
       state.filterType = action.payload
-    },
-    setShowHouses: (state, action) => {
-      state.showHouses = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -66,7 +63,6 @@ export const housesSlice = createSlice({
   },
 })
 
-export const { setFilterCity, setFilterType, setShowHouses } =
-  housesSlice.actions
+export const { setFilterCity, setFilterType } = housesSlice.actions
 
 export default housesSlice.reducer

@@ -1,7 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { fetchHouses, setShowHouses } from '../../store/houses.slice'
+import { fetchHouses } from '../../store/houses.slice'
 import { Button } from '../atoms'
 import { HouseCard } from '../molecules'
 import { useFetch } from '../../hooks'
@@ -23,14 +23,15 @@ const filterHouses = (house, filterCity, filterType) =>
   byCity(house, filterCity) && byType(house, filterType)
 
 function Houses() {
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalHouses = 9 * currentPage
+
   const dispatch = useDispatch()
-  const { allIds, byId, showHouses, filterCity, filterType } = useSelector(
-    (s) => s.houses,
-  )
+  const { allIds, byId, filterCity, filterType } = useSelector((s) => s.houses)
 
   useEffect(() => {
-    dispatch(fetchHouses())
-  }, [dispatch])
+    dispatch(fetchHouses(currentPage))
+  }, [dispatch, currentPage])
 
   const { loading, isError, isSuccess } = useFetch(urls.houses)
 
@@ -42,7 +43,6 @@ function Houses() {
         <Grid gridGap="32px">
           {allIds
             .filter((id) => filterHouses(byId[id], filterCity, filterType))
-            .slice(0, showHouses)
             .map((id) => (
               <HouseCard
                 key={id}
@@ -55,10 +55,10 @@ function Houses() {
         </Grid>
       )}
       <FlexBox align="center">
-        {allIds.length > showHouses && (
+        {allIds.length >= totalHouses && (
           <Button
             style={{ marginTop: '2rem' }}
-            onClick={() => dispatch(setShowHouses(showHouses + 9))}
+            onClick={() => setCurrentPage(currentPage + 1)}
           >
             Load more
           </Button>
